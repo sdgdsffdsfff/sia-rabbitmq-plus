@@ -1,6 +1,6 @@
 package com.sia.rabbitmqplus.gather.database;
 
-import com.sia.rabbitmqplus.gather.pojo.QueueInfo;
+import com.sia.rabbitmqplus.common.pojo.QueueInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -20,24 +20,19 @@ import java.util.List;
 public class DataBaseHandler {
 
     @Autowired
-    @Qualifier("skytrainJdbcTemplate")
-    protected JdbcTemplate skytrainJdbcTemplate;
+    @Qualifier("siaJdbcTemplate")
+    protected JdbcTemplate siaJdbcTemplate;
 
     /**
      * MQ队列信息
      */
-    private static String INSERT_QUEUE_INFO_SQL = "INSERT INTO skytrain_queue_message_info_history "
+    private static String INSERT_QUEUE_INFO_SQL = "INSERT INTO sia_queue_message_info_history "
             + "(queue_name,un_consume_message_num,publish_message_num,deliver_message_num,worktime) "
             + "VALUES (?,?,?,?,?) ";
 
-    private static String DELETE_QUEUE_INFO_SQL = "DELETE FROM skytrain_queue_message_info_history "
+    private static String DELETE_QUEUE_INFO_SQL = "DELETE FROM sia_queue_message_info_history "
             + "WHERE worktime < ? ";
 
-    /**
-     * 死信队列数据
-     */
-    private static String INSERT_DEAD_LETTER_SQL = "INSERT INTO skytrain_dead_letter "
-            + "(queue_name,deadtime,type,message) " + "VALUES (?,?,?,?)";
 
     /**
      * insertHistoryBatch
@@ -47,9 +42,8 @@ public class DataBaseHandler {
     public void insertHistoryBatch(final List<QueueInfo> queueInfos) {
 
         final Timestamp ts = new Timestamp(System.currentTimeMillis());
-        skytrainJdbcTemplate.batchUpdate(INSERT_QUEUE_INFO_SQL, new BatchPreparedStatementSetter() {
+        siaJdbcTemplate.batchUpdate(INSERT_QUEUE_INFO_SQL, new BatchPreparedStatementSetter() {
 
-            @Override
             public void setValues(PreparedStatement psts, int i) throws SQLException {
 
                 QueueInfo queueInfo = queueInfos.get(i);
@@ -60,7 +54,6 @@ public class DataBaseHandler {
                 psts.setTimestamp(5, ts);
             }
 
-            @Override
             public int getBatchSize() {
 
                 return queueInfos.size();
@@ -68,28 +61,6 @@ public class DataBaseHandler {
         });
     }
 
-    /**
-     * insertDeadLetter
-     *
-     * @param queueName
-     * @param time
-     * @param type
-     * @param message
-     */
-    public void insertDeadLetter(final String queueName, final Timestamp time, final String type,
-            final String message) {
-
-        skytrainJdbcTemplate.update(INSERT_DEAD_LETTER_SQL, new PreparedStatementSetter() {
-
-            public void setValues(PreparedStatement psts) throws SQLException {
-
-                psts.setString(1, queueName);
-                psts.setTimestamp(2, time);
-                psts.setString(3, type);
-                psts.setString(4, message);
-            }
-        });
-    }
 
     /**
      * clearHistory
@@ -97,7 +68,7 @@ public class DataBaseHandler {
     public void clearHistory(long millisecondsBefore) {
 
         final Timestamp ts = new Timestamp(System.currentTimeMillis() - millisecondsBefore);
-        skytrainJdbcTemplate.update(DELETE_QUEUE_INFO_SQL, new PreparedStatementSetter() {
+        siaJdbcTemplate.update(DELETE_QUEUE_INFO_SQL, new PreparedStatementSetter() {
 
             public void setValues(PreparedStatement psts) throws SQLException {
 
@@ -109,12 +80,12 @@ public class DataBaseHandler {
     /**
      * 备库中查询数据条数
      *
-     * @param SQL
+     * @param sql
      * @return
      */
-    public long getNumFromOtherDataSource(String SQL) {
+    public long getNumFromOtherDataSource(String sql) {
 
-        return skytrainJdbcTemplate.queryForObject(SQL, Long.class);
+        return siaJdbcTemplate.queryForObject(sql, Long.class);
     }
 
 }

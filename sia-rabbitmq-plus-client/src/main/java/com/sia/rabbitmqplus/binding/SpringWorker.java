@@ -18,7 +18,7 @@ import java.nio.charset.Charset;
 
 
 /**
- * Created by xinliang on 16/8/12.
+ * @author xinliang on 16/8/12.
  */
 public class SpringWorker implements Runnable {
 
@@ -63,7 +63,6 @@ public class SpringWorker implements Runnable {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
-			    //ConsumerBarrier.checkBarrier();
 				byte[] bytes = body;
 				long tag = envelope.getDeliveryTag();
 				try {
@@ -98,7 +97,7 @@ public class SpringWorker implements Runnable {
 
 			@Override
 			public void handleShutdownSignal(String consumerTag, ShutdownSignalException sig) {
-				LOGGER.error(Const.SIA_LOG_PREFIX + "[网络断开，skytrain尝试重连]", sig);
+				LOGGER.error(Const.SIA_LOG_PREFIX + "[网络断开，sia尝试重连]", sig);
 			}
 		};
 

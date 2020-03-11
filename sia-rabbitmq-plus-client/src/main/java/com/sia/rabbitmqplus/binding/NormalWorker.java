@@ -15,10 +15,9 @@ import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.concurrent.ConcurrentHashMap;
 
-//import com.creditease.skytrain.control.ConsumerBarrier;
-
 /**
- * Created by xinliang on 16/8/8.
+ * @author xinliang
+ * @date 16/8/8
  */
 public class NormalWorker implements Runnable {
 
@@ -59,7 +58,6 @@ public class NormalWorker implements Runnable {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
-			    //ConsumerBarrier.checkBarrier();
 				byte[] bytes = body;
 				long tag = envelope.getDeliveryTag();
 				try {
@@ -95,7 +93,7 @@ public class NormalWorker implements Runnable {
 
 			@Override
 			public void handleShutdownSignal(String consumerTag, ShutdownSignalException sig) {
-				LOGGER.error(Const.SIA_LOG_PREFIX + "[网络断开，skytrain尝试重连]", sig);
+				LOGGER.error(Const.SIA_LOG_PREFIX + "[网络断开，sia尝试重连]", sig);
 			}
 
 		};

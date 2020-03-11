@@ -10,21 +10,21 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 
 /**
- * Created by xinliang on 2017/9/8.
+ * @author xinliang on 2017/9/8.
  */
 @Configuration
 public class DataSourceConfig {
 
-    @Bean(name = "skytrainDataSource")
-    @Qualifier("skytrainDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.skytrain")
-    public DataSource skytrainDataSource() {
+    @Bean(name = "siaDataSource")
+    @Qualifier("siaDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.sia")
+    public DataSource siaDataSource() {
 
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "skytrainJdbcTemplate")
-    public JdbcTemplate skytrainJdbcTemplate(@Qualifier("skytrainDataSource") DataSource dataSource) {
+    @Bean(name = "siaJdbcTemplate")
+    public JdbcTemplate siaJdbcTemplate(@Qualifier("siaDataSource") DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
 

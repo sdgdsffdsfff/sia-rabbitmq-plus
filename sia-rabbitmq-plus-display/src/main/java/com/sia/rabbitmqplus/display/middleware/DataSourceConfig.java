@@ -15,23 +15,23 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import javax.sql.DataSource;
 
 /**
- * Created by xinliang on 2017/9/10.
+ * @author  xinliang
+ * @date 2017/9/10.
  */
 @Configuration
-// @MapperScan(basePackages = "com.creditease.skytrain.display.mapper", sqlSessionTemplateRef = "sqlSessionTemplate")
 public class DataSourceConfig {
 
-    @Bean(name = "skytrainDataSource")
-    @Qualifier("skytrainDataSource")
+    @Bean(name = "siaDataSource")
+    @Qualifier("siaDataSource")
     @Primary
-    @ConfigurationProperties(prefix = "spring.datasource.skytrain")
-    public DataSource skytrainDataSource() {
+    @ConfigurationProperties(prefix = "spring.datasource.sia")
+    public DataSource siaDataSource() {
 
         return DataSourceBuilder.create().build();
     }
 
     @Bean(name = "sqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory(@Qualifier("skytrainDataSource") DataSource dataSource)
+    public SqlSessionFactory sqlSessionFactory(@Qualifier("siaDataSource") DataSource dataSource)
             throws Exception {
 
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
@@ -41,7 +41,7 @@ public class DataSourceConfig {
     }
 
     @Bean(name = "transactionManager")
-    public DataSourceTransactionManager transactionManager(@Qualifier("skytrainDataSource") DataSource dataSource) {
+    public DataSourceTransactionManager transactionManager(@Qualifier("siaDataSource") DataSource dataSource) {
 
         return new DataSourceTransactionManager(dataSource);
     }
